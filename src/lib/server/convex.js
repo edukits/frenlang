@@ -15,16 +15,16 @@ const COOKIE_OPTIONS = {
 
 function getConvexUrl() {
 	const url =
-		privateEnv.CONVEX_URL ??
-		privateEnv.VITE_CONVEX_URL ??
-		privateEnv.NEXT_PUBLIC_CONVEX_URL ??
+		privateEnv.CONVEX_URL ||
+		privateEnv.VITE_CONVEX_URL ||
+		privateEnv.NEXT_PUBLIC_CONVEX_URL ||
 		publicEnv.PUBLIC_CONVEX_URL;
 	if (!url) {
 		throw new Error(
 			'Missing Convex deployment URL. Set CONVEX_URL, PUBLIC_CONVEX_URL, or VITE_CONVEX_URL.'
 		);
 	}
-	return url;
+	return url.trim().replace(/\/+$/, '');
 }
 
 export function createConvexClient(token) {
@@ -67,10 +67,26 @@ export function clearAuthCookies(cookies) {
 }
 
 export function errorMessage(error) {
-	if (error instanceof Error) {
-		return error.message;
+	const raw =
+		error instanceof Error
+			? error.message
+			: typeof error === 'string'
+				? error
+				: error && typeof error === 'object' && 'message' in error
+					? String(error.message)
+					: '';
+
+	if (/InvalidAccountId/i.test(raw)) {
+		return 'No account found for that email. Create an account to continue.';
 	}
-	return 'Unknown error';
+	if (/InvalidSecret|invalid password/i.test(raw)) {
+		return 'Incorrect email or password.';
+	}
+	if (/already exists|AccountAlreadyExists/i.test(raw)) {
+		return 'An account with that email already exists. Try signing in instead.';
+	}
+
+	return raw || 'Unknown error';
 }
 
 export const api = anyApi;
