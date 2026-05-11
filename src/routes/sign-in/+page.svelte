@@ -1,35 +1,44 @@
 <script>
-	import { page } from '$app/state';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import Logo from '../../img/Logomark.png';
 
-	let { data } = $props();
-	let supabase = $derived(data.supabase);
-
 	let email = $state('');
+	let password = $state('');
+	let mode = $state('signIn');
 	let errorMessage = $state('');
 	let loading = $state(false);
 
-	async function signInWithEmail() {
+	let title = $derived(mode === 'signIn' ? 'Sign in to your account' : 'Create your account');
+	let buttonLabel = $derived(mode === 'signIn' ? 'Sign in' : 'Create account');
+	let toggleLabel = $derived(mode === 'signIn' ? 'Create an account' : 'Sign in instead');
+
+	async function submit() {
 		if (loading) {
 			return;
 		}
 
 		loading = true;
+		errorMessage = '';
 
 		try {
-			const { error } = await supabase.auth.signInWithOtp({
-				email: email,
-				options: {
-					emailRedirectTo: page.url.origin + '/auth/callback'
-				}
+			const response = await fetch('/auth/password', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					email,
+					password,
+					flow: mode
+				})
 			});
-
-			if (error) {
-				throw error;
+			const result = await response.json();
+			if (!response.ok || result.error) {
+				throw new Error(result.error ?? 'Unable to authenticate');
 			}
 
-			goto('/auth/otp?email=' + encodeURIComponent(email));
+			await invalidateAll();
+			goto('/');
 		} catch (e) {
 			errorMessage = e instanceof Error ? e.message : 'Unknown error';
 		} finally {
@@ -40,14 +49,14 @@
 
 <div class="container mx-auto my-10 max-w-sm">
 	<img src={Logo} alt="Logo" class="mx-auto mb-4 w-14" />
-	<h1 class="text-center text-3xl font-semibold">Sign in to your account</h1>
-	<p class="py-2 text-center text-slate-500">Get started with your email below.</p>
+	<h1 class="text-center text-3xl font-semibold">{title}</h1>
+	<p class="py-2 text-center text-slate-500">Use email and password to continue.</p>
 
 	<form
 		class="mt-8"
 		onsubmit={(event) => {
 			event.preventDefault();
-			signInWithEmail();
+			submit();
 		}}
 	>
 		{#if errorMessage}
@@ -62,6 +71,7 @@
 		<div class="mb-4">
 			<label for="email" class="mb-1 block text-sm text-slate-500">Email</label>
 			<input
+				id="email"
 				type="email"
 				name="email"
 				required={true}
@@ -71,12 +81,34 @@
 			/>
 		</div>
 		<div class="mb-4">
+			<label for="password" class="mb-1 block text-sm text-slate-500">Password</label>
+			<input
+				id="password"
+				type="password"
+				name="password"
+				required={true}
+				minlength="8"
+				bind:value={password}
+				class="w-full"
+			/>
+		</div>
+		<div class="mb-4 flex flex-col gap-3">
 			<button type="submit" disabled={loading} class="btn btn-primary w-full">
 				{#if loading}
 					Loading...
 				{:else}
-					Continue with email
+					{buttonLabel}
 				{/if}
+			</button>
+			<button
+				type="button"
+				class="text-sm text-sky-600 hover:underline"
+				onclick={() => {
+					mode = mode === 'signIn' ? 'signUp' : 'signIn';
+					errorMessage = '';
+				}}
+			>
+				{toggleLabel}
 			</button>
 		</div>
 	</form>

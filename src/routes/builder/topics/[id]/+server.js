@@ -1,37 +1,30 @@
-/**
- * PATCH /builder/topics/:id/+server
- * Patch a topic. Only the name and description fields can be updated.
- * @param supabase
- * @param id
- * @param request
- * @returns {Promise<Response>}
- * @constructor
- */
-export async function PATCH({ locals: { supabase }, params: { id }, request }) {
-	// Validate input
+import { api, errorMessage } from '$lib/server/convex.js';
+
+export async function PATCH({ locals: { convex }, params: { id }, request }) {
 	if (!request) {
 		return new Response(JSON.stringify({ error: 'Missing request body' }), { status: 400 });
 	}
-	const { name, description } = await request.json();
-	if (!name && !description) {
-		return new Response(JSON.stringify({ error: 'Must provide at least one field to update' }), {
-			status: 400
-		});
+
+	try {
+		const { name, description } = await request.json();
+		if (!name && !description) {
+			return new Response(JSON.stringify({ error: 'Must provide at least one field to update' }), {
+				status: 400
+			});
+		}
+
+		await convex.mutation(api.topics.update, { id, name, description });
+		return new Response(JSON.stringify({}), { status: 200 });
+	} catch (error) {
+		return new Response(JSON.stringify({ error: errorMessage(error) }), { status: 500 });
 	}
+}
 
-	// Only update the fields that were provided
-	const fieldsToUpdate = {
-		...(name && { name }),
-		...(description && { description })
-	};
-
-	console.log(fieldsToUpdate);
-
-	// Update the topic
-	const { error } = await supabase.from('topics').update(fieldsToUpdate).eq('id', id);
-	if (error) {
-		return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+export async function DELETE({ locals: { convex }, params: { id } }) {
+	try {
+		await convex.mutation(api.topics.remove, { id });
+		return new Response(JSON.stringify({}), { status: 200 });
+	} catch (error) {
+		return new Response(JSON.stringify({ error: errorMessage(error) }), { status: 500 });
 	}
-
-	return new Response(JSON.stringify({}), { status: 200 });
 }
