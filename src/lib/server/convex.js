@@ -1,6 +1,7 @@
 import { ConvexHttpClient } from 'convex/browser';
 import { anyApi } from 'convex/server';
-import { env } from '$env/dynamic/private';
+import { env as privateEnv } from '$env/dynamic/private';
+import { env as publicEnv } from '$env/dynamic/public';
 
 const AUTH_TOKEN_COOKIE = 'frenlang_convex_token';
 const REFRESH_TOKEN_COOKIE = 'frenlang_convex_refresh';
@@ -14,7 +15,10 @@ const COOKIE_OPTIONS = {
 
 function getConvexUrl() {
 	const url =
-		env.CONVEX_URL ?? env.PUBLIC_CONVEX_URL ?? env.VITE_CONVEX_URL ?? env.NEXT_PUBLIC_CONVEX_URL;
+		privateEnv.CONVEX_URL ??
+		privateEnv.VITE_CONVEX_URL ??
+		privateEnv.NEXT_PUBLIC_CONVEX_URL ??
+		publicEnv.PUBLIC_CONVEX_URL;
 	if (!url) {
 		throw new Error(
 			'Missing Convex deployment URL. Set CONVEX_URL, PUBLIC_CONVEX_URL, or VITE_CONVEX_URL.'
