@@ -35,29 +35,32 @@
 	const isSubPage = (href) => page.url.pathname.startsWith(href) && page.url.pathname !== href;
 </script>
 
-<div class="flex min-h-screen flex-col">
-	<header class="border-b px-4">
+<div class="flex min-h-screen flex-col bg-white">
+	<header class="border-b border-[var(--cloud-soft)] px-4">
 		<div class="container mx-auto flex items-center justify-between">
-			<a href="/" class="flex items-center gap-1 text-xl font-semibold">
+			<a href="/" class="brand-wordmark flex items-center gap-2 py-3 text-xl">
 				<img src={Logo} alt="EduKits French" class="inline-block h-8 w-8" />
-				Frenlang <span class="mt-1 hidden text-sm text-gray-500 md:block">By EduKits</span>
+				Frenlang <span class="mt-1 hidden text-sm text-[var(--silver)] md:block">By EduKits</span>
 			</a>
 			<nav class="flex items-center gap-3">
 				{#if user}
 					{#each menuItems as { href, icon: Icon, text } (href)}
 						<a
 							{href}
-							class="mr-4 flex items-center gap-2 border-b-2 py-4 {isCurrentPage(href)
+							class="top-nav-link mr-4 flex items-center gap-2 py-4 {isCurrentPage(href)
 								? isSubPage(href)
-									? 'border-slate-700'
-									: 'border-sky-500 font-semibold text-sky-900'
-								: 'border-transparent'}"
+									? 'top-nav-link--subpage'
+									: 'top-nav-link--active'
+								: ''}"
 						>
 							<Icon />
 							<span class="hidden md:inline">{text}</span>
 						</a>
 					{/each}
-					<button use:melt={$trigger} class="mr-4 flex items-center gap-2">
+					<button
+						use:melt={$trigger}
+						class="mr-4 flex items-center gap-2 font-extrabold text-[var(--graphite)]"
+					>
 						<img src={svg} alt="Avatar" class="inline-block h-7 w-7 rounded-full" />
 						<span class="hidden md:inline">My Account</span>
 					</button>
@@ -65,33 +68,33 @@
 						<div
 							use:melt={$menu}
 							transition:fly={{ duration: 150, y: -10 }}
-							class="z-10 flex min-w-40 flex-col rounded-md border border-gray-200 bg-white p-1 shadow-lg"
+							class="account-menu z-10 flex min-w-40 flex-col p-1"
 						>
 							<div use:melt={$item}>
-								<a href="/profile" class="block rounded px-2 py-1 hover:bg-slate-200">Profile</a>
+								<a href="/profile" class="block px-3 py-2">Profile</a>
 							</div>
 							<div use:melt={$item}>
-								<a href="/sign-out" class="block rounded px-2 py-1 hover:bg-slate-200">Sign Out</a>
+								<a href="/sign-out" class="block px-3 py-2">Sign Out</a>
 							</div>
 						</div>
 					{/if}
 				{:else}
-					<a href="/sign-in">Sign In</a>
+					<a href="/sign-in" class="text-link">Sign In</a>
 				{/if}
 			</nav>
 		</div>
 	</header>
-	<div class="p-4">
-		<main class="container mx-auto flex-auto">
+	<div class="flex min-h-0 flex-1 flex-col p-4 md:p-6">
+		<main class="container mx-auto flex min-h-0 flex-1 flex-col">
 			{@render children()}
 		</main>
 	</div>
-	<footer class="mt-auto border-t py-4">
-		<div class="container mx-auto text-center text-xs text-slate-500">
+	<footer class="mt-auto border-t border-[var(--cloud-soft)] py-4">
+		<div class="container mx-auto text-center text-xs font-bold text-[var(--silver)]">
 			<p>
 				&copy; Copyright {new Date().getFullYear()}
-				<a href="https://edukits.co/" class="text-sky-600 hover:underline">EduKits International</a
-				>. All rights reserved.
+				<a href="https://edukits.co/" class="text-link">EduKits International</a>. All rights
+				reserved.
 			</p>
 		</div>
 	</footer>

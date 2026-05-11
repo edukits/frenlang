@@ -188,19 +188,23 @@
 </script>
 
 <!-- List header -->
-<div class="my-0 flex items-center justify-between border-b py-10">
+<div
+	class="my-0 flex flex-col justify-between gap-6 border-b border-[var(--cloud-soft)] py-10 lg:flex-row lg:items-center"
+>
 	<!-- Basic info -->
 	<div class="flex flex-col gap-2">
-		<p class="flex gap-1 text-slate-500"><ListAltSharp class="h-6 w-auto p-0" /> Study List</p>
+		<p class="eyebrow flex gap-1"><ListAltSharp class="h-6 w-auto p-0" /> Study List</p>
 		<h1
-			class="text-2xl font-semibold {isNameEdited ? 'text-sky-600' : ''}"
+			class="page-heading text-4xl {isNameEdited ? 'text-[var(--edukits-blue-bright)]' : ''}"
 			contenteditable="true"
 			bind:textContent={editedName}
 		>
 			{name}
 		</h1>
 		<p
-			class={isDescriptionEdited ? 'text-sky-600' : ''}
+			class="text-[var(--graphite)] {isDescriptionEdited
+				? 'text-[var(--edukits-blue-bright)]'
+				: ''}"
 			contenteditable="true"
 			bind:textContent={editedDescription}
 		>
@@ -219,7 +223,7 @@
 	</div>
 
 	<!-- Actions -->
-	<div class="flex gap-2">
+	<div class="flex flex-wrap gap-2">
 		{#if wordsToAdd.length + wordIdsToRemove.length > 0 || isNameEdited || isDescriptionEdited}
 			<button class="btn flex items-center gap-1" disabled={isLoading} onclick={reset}>
 				<DeleteHistory /> Undo Edits
@@ -254,7 +258,7 @@
 </div>
 
 <!-- Vocabulary list -->
-<h2 class="my-5 text-xl font-semibold">Vocabulary</h2>
+<h2 class="my-5 text-xl font-extrabold">Vocabulary</h2>
 {#if list.vocabulary.length > 0 || wordsToAdd.length > 0}
 	<div class={list.vocabulary.length > 10 ? 'md:columns-2 lg:columns-3 2xl:columns-4' : ''}>
 		{#each sortedVocabulary as item (item.id)}
@@ -268,19 +272,21 @@
 						: [...wordIdsToRemove, item.id])}
 			>
 				<span class="font-semibold">{item.word}</span>
-				<span class="text-slate-500">{item.translation}</span>
+				<span class="text-[var(--graphite)]">{item.translation}</span>
 			</button>
 		{/each}
 	</div>
 	{#if wordsToAdd.length > 0}
-		<div class="mt-5 flex items-center gap-2 border-b">
-			<h3 class="font-semibold">New vocabulary</h3>
-			<p class="text-xs text-slate-500">Click on a word to remove it from the list.</p>
+		<div class="mt-5 flex items-center gap-2 border-b border-[var(--cloud-soft)]">
+			<h3 class="font-extrabold">New vocabulary</h3>
+			<p class="text-xs font-bold text-[var(--silver)]">
+				Click on a word to remove it from the list.
+			</p>
 		</div>
 	{/if}
 	{#each wordsToAdd as item (item.id)}
 		<button
-			class="flex cursor-pointer gap-2 text-sky-600 hover:text-red-600"
+			class="flex cursor-pointer gap-2 text-[var(--edukits-blue-bright)] hover:text-red-600"
 			onclick={() => (wordsToAdd = wordsToAdd.filter((w) => w.id !== item.id))}
 			onkeydown={(e) => {
 				if (e.key === 'Enter') wordsToAdd = wordsToAdd.filter((w) => w.id !== item.id);
@@ -291,10 +297,10 @@
 		</button>
 	{/each}
 {:else}
-	<p>There are no vocabulary items in this list.</p>
+	<p class="text-[var(--graphite)]">There are no vocabulary items in this list.</p>
 {/if}
 
-<div class="w-2/5">
+<div class="mt-6 max-w-xl">
 	<SearchableVocabulary
 		bind:selectedWords={wordsToAdd}
 		excludeIds={list.vocabulary.map((w) => w.id)}

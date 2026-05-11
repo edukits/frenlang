@@ -80,19 +80,19 @@
 </script>
 
 <div class="flex justify-between">
-	<h1 class="text-3xl font-semibold">Topics</h1>
+	<h1 class="page-heading text-4xl">Topics</h1>
 	<div class="flex gap-2">
 		<a href="/builder/vocabulary/new" class="btn btn-primary">Add New</a>
 	</div>
 </div>
 
 <div class="relative my-5 overflow-x-auto">
-	<table class="w-full text-left text-sm text-gray-500 rtl:text-right">
-		<thead class="border-b text-gray-700">
+	<table class="w-full text-left text-sm text-[var(--graphite)] rtl:text-right">
+		<thead class="border-b border-[var(--cloud)] text-[var(--ink)]">
 			<tr>
 				{#each columns as column (column.id)}
 					<th
-						class="cursor-pointer px-6 py-3 hover:bg-slate-100"
+						class="cursor-pointer px-6 py-3 font-extrabold hover:bg-[var(--edukits-blue-light)]"
 						onclick={() => toggleSort(column.id)}
 					>
 						{column.header}
@@ -109,9 +109,13 @@
 		<tbody>
 			{#each topics as row (row.id)}
 				{@const changeKey = String(row.id)}
-				<tr class="border-b bg-white {changes[changeKey] ? 'bg-sky-50' : ''}">
+				<tr
+					class="border-b border-[var(--cloud-soft)] bg-white {changes[changeKey]
+						? 'bg-[var(--edukits-blue-light)]'
+						: ''}"
+				>
 					{#each columns as column (column.id)}
-						<td class="px-6 py-4 font-medium whitespace-nowrap text-gray-900">
+						<td class="px-6 py-4 font-bold whitespace-nowrap text-[var(--ink)]">
 							<p
 								contenteditable="true"
 								oninput={(e) => {
@@ -141,7 +145,7 @@
 					<td class="px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
 						{#if changes[changeKey]}
 							<button
-								class="mr-2 text-sky-600 hover:underline"
+								class="text-link mr-2"
 								onclick={async () => {
 									try {
 										const response = await fetch('/builder/topics/' + row.id, {
@@ -180,7 +184,7 @@
 	<div class="mx-auto flex w-min gap-1 text-sm">
 		<a href={prevLink} class="btn" aria-disabled={page <= 1}>Previous</a>
 		{#each Array.from({ length: Math.ceil(topicSize / pageSize) }, (_, i) => i + 1) as pageNum (pageNum)}
-			<a href={pageLinks[pageNum - 1]} class="btn {pageNum === page ? 'bg-slate-100' : ''}"
+			<a href={pageLinks[pageNum - 1]} class="btn {pageNum === page ? 'soft-pill' : ''}"
 				>{pageNum}</a
 			>
 		{/each}

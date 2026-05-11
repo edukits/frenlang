@@ -42,11 +42,11 @@
 
 {#if topics.length > 0}
 	<div class="my-5 flex flex-col gap-1">
-		<span class="mb-1 block text-sm text-slate-500">Selected topics</span>
+		<span class="mb-1 block text-sm font-extrabold text-[var(--silver)]">Selected topics</span>
 		<div class="flex flex-wrap gap-2">
 			{#each topics as topic (topic.id)}
 				<button
-					class="rounded-md bg-sky-100 px-2 py-1 text-sky-900 hover:bg-red-100 hover:text-red-900"
+					class="soft-pill px-3 py-1 hover:bg-red-100 hover:text-red-900"
 					onclick={() => {
 						topics = topics.filter((t) => t.id !== topic.id);
 					}}

@@ -92,17 +92,17 @@
 />
 
 <div class="flex items-center justify-between">
-	<h1 class="text-3xl font-semibold">Add Vocabulary</h1>
+	<h1 class="page-heading text-4xl">Add Vocabulary</h1>
 	<div class="flex gap-2">
 		<a class="btn btn-secondary flex items-center gap-2" href="/builder/vocabulary">
 			Cancel
-			<span class="rounded border border-slate-300 p-1 font-mono text-xs text-slate-500">
+			<span class="rounded border border-[var(--cloud)] p-1 font-mono text-xs text-[var(--silver)]">
 				Esc
 			</span>
 		</a>
 		<button class="btn btn-primary flex items-center gap-2" disabled={loading} onclick={add}>
 			{loading ? 'Adding' : 'Add'}
-			<span class="rounded border border-sky-400 p-1 font-mono text-xs text-sky-100">
+			<span class="rounded border border-blue-300 p-1 font-mono text-xs text-blue-100">
 				Ctrl + Enter
 			</span>
 		</button>

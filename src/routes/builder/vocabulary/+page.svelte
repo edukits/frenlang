@@ -95,13 +95,13 @@
 </script>
 
 <!-- Header -->
-<div class="flex justify-between">
+<div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
 	<div class="flex flex-row items-center gap-2">
-		<h1 class="text-3xl font-semibold">Vocabulary</h1>
+		<h1 class="page-heading text-4xl">Vocabulary</h1>
 		<!-- Count -->
-		<span class="rounded-full bg-slate-200 px-2 py-1 text-xs text-slate-800">{vocabSize}</span>
+		<span class="soft-pill px-3 py-1 text-xs">{vocabSize}</span>
 	</div>
-	<div class="flex gap-2">
+	<div class="flex flex-wrap gap-2">
 		<input type="text" placeholder="Enter search term" />
 		<button class="btn flex items-center gap-1"><MaterialSymbolsSearch /> Search</button>
 		<a href="/builder/vocabulary/new" class="btn btn-primary flex items-center gap-1"
@@ -111,7 +111,7 @@
 </div>
 
 <!-- Filter by word type -->
-<div class="my-4 flex w-3/12 flex-col">
+<div class="my-4 flex max-w-sm flex-col">
 	<Select
 		labelTitle="Filter by Word Type"
 		options={[
@@ -124,12 +124,12 @@
 </div>
 
 <div class="relative my-5 overflow-x-auto">
-	<table class="w-full text-left text-sm text-gray-500 rtl:text-right">
-		<thead class="border-b text-gray-700">
+	<table class="w-full text-left text-sm text-[var(--graphite)] rtl:text-right">
+		<thead class="border-b border-[var(--cloud)] text-[var(--ink)]">
 			<tr>
 				{#each columns as column (column.id)}
 					<th
-						class="cursor-pointer px-6 py-3 hover:bg-slate-100"
+						class="cursor-pointer px-6 py-3 font-extrabold hover:bg-[var(--edukits-blue-light)]"
 						onclick={() => toggleSort(column.id)}
 					>
 						{column.header}
@@ -146,23 +146,19 @@
 		</thead>
 		<tbody>
 			{#each vocabulary as row (row.id)}
-				<tr class="border-b bg-white">
+				<tr class="border-b border-[var(--cloud-soft)] bg-white">
 					{#each columns as column (column.id)}
-						<td class="px-6 py-2 font-medium whitespace-nowrap text-gray-900">
+						<td class="px-6 py-2 font-bold whitespace-nowrap text-[var(--ink)]">
 							{row[column.id]}
 						</td>
 					{/each}
 					<td>
 						{#each getTopics(row.id) as topic (topic)}
-							<span class="mr-1 rounded-full bg-sky-100 px-2 py-1 text-xs text-sky-600"
-								>{topic}</span
-							>
+							<span class="soft-pill mr-1 px-2 py-1 text-xs">{topic}</span>
 						{/each}
 					</td>
 					<td class="px-6 py-2 text-right text-sm font-medium whitespace-nowrap">
-						<a href="/builder/vocabulary/{row.id}/edit" class="mr-2 text-sky-600 hover:underline"
-							>Edit</a
-						>
+						<a href="/builder/vocabulary/{row.id}/edit" class="text-link mr-2">Edit</a>
 						<button onclick={() => deleteVocabulary(row.id)} class="text-red-600 hover:underline"
 							>Delete</button
 						>
@@ -180,7 +176,7 @@
 			><MaterialSymbolsChevronLeft /></a
 		>
 		{#each Array.from({ length: Math.ceil(vocabSize / pageSize) }, (_, i) => i + 1) as pageNum (pageNum)}
-			<a href={pageLinks[pageNum - 1]} class="btn {pageNum === page ? 'bg-slate-100' : ''}"
+			<a href={pageLinks[pageNum - 1]} class="btn {pageNum === page ? 'soft-pill' : ''}"
 				>{pageNum}</a
 			>
 		{/each}

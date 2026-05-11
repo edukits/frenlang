@@ -271,10 +271,11 @@
 		display: block;
 		width: 100%;
 		padding: 0.75rem;
-		border-radius: 0.5rem;
-		background-color: #fff;
-		color: #4a5568;
+		border-radius: 12px;
+		background-color: var(--snow);
+		color: var(--graphite);
 		font-size: 1rem;
+		font-weight: 800;
 		opacity: 1;
 		transition:
 			opacity 0.5s ease-in-out,
@@ -283,27 +284,27 @@
 	}
 
 	.word:hover {
-		background-color: #f7fafc;
+		background-color: var(--edukits-blue-light);
 		transition: none;
 	}
 
 	.word.selected {
-		background-color: var(--color-sky-100);
-		color: var(--color-sky-800);
-		border-color: var(--color-sky-300);
+		background-color: var(--edukits-blue-light);
+		color: var(--edukits-blue);
+		border-color: var(--edukits-blue-bright);
 	}
 
 	.word.correctMatch {
-		background-color: var(--color-lime-100);
-		color: var(--color-lime-800);
-		border-color: var(--color-lime-300);
+		background-color: color-mix(in srgb, var(--mint) 18%, white);
+		color: #087545;
+		border-color: var(--mint);
 		cursor: default;
 	}
 
 	.word.incorrectMatch {
-		background-color: var(--color-red-100);
-		color: var(--color-red-800);
-		border-color: var(--color-red-300);
+		background-color: #fff0f0;
+		color: var(--edukits-red-deep);
+		border-color: var(--edukits-red);
 		cursor: default;
 	}
 

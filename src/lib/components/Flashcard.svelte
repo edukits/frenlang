@@ -28,14 +28,14 @@
 	<!-- Flashcard -->
 	<div class="mx-auto w-full max-w-sm">
 		<div
-			class="card-container mb-4 rounded-xl border border-slate-300 bg-white px-8 py-8"
+			class="card-container surface-card mb-4 px-8 py-8 text-3xl font-extrabold"
 			class:content-hidden={!flipped}
 		>
 			<div>
 				{@render front?.()}
 			</div>
 			{#if flipped}
-				<div class="mt-5 border-t border-t-slate-300 pt-5">
+				<div class="mt-5 border-t border-t-[var(--cloud)] pt-5 text-[var(--edukits-blue)]">
 					{@render back?.()}
 				</div>
 			{/if}
@@ -45,7 +45,7 @@
 	{#if flipped}
 		<!-- Confidence Buttons -->
 		<div class="mx-auto flex w-min flex-col">
-			<p class="mb-4 text-slate-700">How well did you know this?</p>
+			<p class="mb-4 font-extrabold text-[var(--graphite)]">How well did you know this?</p>
 			<div class="flex justify-center space-x-4">
 				{#each [1, 2, 3, 4, 5] as confidence (confidence)}
 					<button
@@ -57,7 +57,7 @@
 					</button>
 				{/each}
 			</div>
-			<div class="mt-2 flex justify-between text-sm text-slate-500">
+			<div class="mt-2 flex justify-between text-sm font-bold text-[var(--silver)]">
 				<span>Not at all</span>
 				<span>Perfectly</span>
 			</div>

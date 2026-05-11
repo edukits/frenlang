@@ -47,10 +47,10 @@
 	}
 </script>
 
-<div class="container mx-auto my-10 max-w-sm">
+<div class="surface-card container mx-auto my-10 max-w-sm p-6">
 	<img src={Logo} alt="Logo" class="mx-auto mb-4 w-14" />
-	<h1 class="text-center text-3xl font-semibold">{title}</h1>
-	<p class="py-2 text-center text-slate-500">Use email and password to continue.</p>
+	<h1 class="page-heading text-center text-3xl">{title}</h1>
+	<p class="py-2 text-center text-[var(--graphite)]">Use email and password to continue.</p>
 
 	<form
 		class="mt-8"
@@ -61,7 +61,7 @@
 	>
 		{#if errorMessage}
 			<div
-				class="relative my-4 rounded border border-red-300 bg-red-100 px-4 py-3 text-sm text-red-700"
+				class="relative my-4 rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm font-bold text-red-700"
 				role="alert"
 			>
 				<strong class="font-semibold">Error:</strong>
@@ -69,7 +69,8 @@
 			</div>
 		{/if}
 		<div class="mb-4">
-			<label for="email" class="mb-1 block text-sm text-slate-500">Email</label>
+			<label for="email" class="mb-1 block text-sm font-extrabold text-[var(--silver)]">Email</label
+			>
 			<input
 				id="email"
 				type="email"
@@ -81,7 +82,9 @@
 			/>
 		</div>
 		<div class="mb-4">
-			<label for="password" class="mb-1 block text-sm text-slate-500">Password</label>
+			<label for="password" class="mb-1 block text-sm font-extrabold text-[var(--silver)]"
+				>Password</label
+			>
 			<input
 				id="password"
 				type="password"
@@ -102,7 +105,7 @@
 			</button>
 			<button
 				type="button"
-				class="text-sm text-sky-600 hover:underline"
+				class="text-link text-sm"
 				onclick={() => {
 					mode = mode === 'signIn' ? 'signUp' : 'signIn';
 					errorMessage = '';

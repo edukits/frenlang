@@ -51,7 +51,7 @@
 	});
 </script>
 
-<div class="my-4 flex w-3/12 flex-col">
+<div class="my-4 flex max-w-sm flex-col">
 	<Select
 		labelTitle="Word Type"
 		options={Object.entries(wordTypes).map(([value, label]) => ({ value, label }))}
@@ -59,13 +59,14 @@
 	/>
 </div>
 
-<hr class="border-b border-b-slate-50" />
+<hr class="border-b border-b-[var(--cloud-soft)]" />
 
 <div class="my-4">
 	<form>
-		<div class="mb-4 grid grid-cols-2 gap-4">
+		<div class="mb-4 grid gap-4 md:grid-cols-2">
 			<div>
-				<label for="word" class="mb-1 block text-sm text-slate-500">Word</label>
+				<label for="word" class="mb-1 block text-sm font-extrabold text-[var(--silver)]">Word</label
+				>
 				<input
 					type="text"
 					class="w-full"
@@ -75,21 +76,25 @@
 				/>
 			</div>
 			<div>
-				<label for="meaning" class="mb-1 block text-sm text-slate-500">Translation</label>
+				<label for="meaning" class="mb-1 block text-sm font-extrabold text-[var(--silver)]"
+					>Translation</label
+				>
 				<input type="text" class="w-full" bind:value={translation} />
 			</div>
 		</div>
 		{#if wordType === 'noun'}
 			<!-- Plural Form -->
-			<div class="mb-4 grid grid-cols-2 gap-4">
+			<div class="mb-4 grid gap-4 md:grid-cols-2">
 				<div>
-					<label for="plural-form" class="mb-1 block text-sm text-slate-500">Plural Form</label>
+					<label for="plural-form" class="mb-1 block text-sm font-extrabold text-[var(--silver)]"
+						>Plural Form</label
+					>
 					<input type="text" class="w-full" bind:value={pluralForm} />
 				</div>
 			</div>
 			<!-- Gender -->
 			<div class="flex flex-col gap-1">
-				<div class="mb-1 block text-sm text-slate-500">Gender</div>
+				<div class="mb-1 block text-sm font-extrabold text-[var(--silver)]">Gender</div>
 				<RadioGroup
 					options={[
 						{ value: 'm', label: 'Masculine' },
@@ -102,6 +107,6 @@
 	</form>
 </div>
 
-<hr class="border-b border-b-slate-50" />
+<hr class="border-b border-b-[var(--cloud-soft)]" />
 
 <TopicTags bind:topics />

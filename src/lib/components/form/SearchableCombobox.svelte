@@ -122,17 +122,17 @@
 <div class="my-5 flex flex-col gap-1">
 	<!-- svelte-ignore a11y_label_has_associated_control - $comboboxLabel contains the 'for' attribute -->
 	<label use:melt={$comboboxLabel}>
-		<span class="mb-1 block text-sm text-slate-500">{label}</span>
+		<span class="mb-1 block text-sm font-extrabold text-[var(--silver)]">{label}</span>
 	</label>
 
 	<div class="relative">
 		<input
 			type="text"
 			use:melt={$input}
-			class="flex h-10 w-full items-center justify-between rounded-lg bg-white px-3 pr-12 text-black"
+			class="flex h-11 w-full items-center justify-between bg-white pr-12 text-[var(--ink)]"
 			{placeholder}
 		/>
-		<div class="text-magnum-900 absolute top-1/2 right-2 z-10 -translate-y-1/2">
+		<div class="absolute top-1/2 right-2 z-10 -translate-y-1/2 text-[var(--edukits-blue)]">
 			{#if $open}
 				<!-- Add your ChevronUp icon here -->
 				<ArrowDropUp />
@@ -146,29 +146,29 @@
 
 {#if $open}
 	<ul
-		class="z-10 flex max-h-[300px] flex-col overflow-hidden rounded-lg border border-slate-200 shadow-md shadow-slate-100"
+		class="z-10 flex max-h-[300px] flex-col overflow-hidden rounded-xl border border-[var(--cloud)]"
 		use:melt={$menu}
 		transition:fly={{ duration: 150, y: -5 }}
 	>
 		<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 		<div
-			class="flex max-h-full flex-col gap-0 overflow-y-auto bg-white px-2 py-2 text-black"
+			class="flex max-h-full flex-col gap-0 overflow-y-auto bg-white px-2 py-2 text-[var(--ink)]"
 			tabindex="0"
 		>
 			{#each filteredItems as item (item.id)}
 				<li
 					use:melt={$option(toOption(item))}
-					class="relative cursor-pointer scroll-my-2 rounded-md px-4 py-2 hover:bg-sky-100 data-[disabled]:opacity-50 data-[highlighted]:bg-sky-200 data-[highlighted]:text-sky-900"
+					class="relative cursor-pointer scroll-my-2 rounded-xl px-4 py-2 hover:bg-[var(--edukits-blue-light)] data-[disabled]:opacity-50 data-[highlighted]:bg-[var(--edukits-blue-light)] data-[highlighted]:text-[var(--edukits-blue)]"
 				>
 					<div>
-						<span class="font-medium">{item.name}</span>
+						<span class="font-extrabold">{item.name}</span>
 						{#if item.description}
 							<span class="block text-sm opacity-75">{item.description}</span>
 						{/if}
 					</div>
 				</li>
 			{:else}
-				<li class="relative cursor-pointer rounded-md py-1 pl-8 pr-4">
+				<li class="relative cursor-pointer rounded-xl py-1 pr-4 pl-8">
 					{#if searching}
 						Searching...
 					{:else}

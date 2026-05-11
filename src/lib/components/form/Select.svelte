@@ -61,12 +61,14 @@
 <div class="flex flex-col">
 	<!-- svelte-ignore a11y_label_has_associated_control - $label contains the 'for' attribute -->
 	{#if labelTitle}
-		<label class="mb-1 block text-sm text-slate-500" use:melt={$label}>{labelTitle}</label>
+		<label class="mb-1 block text-sm font-extrabold text-[var(--silver)]" use:melt={$label}
+			>{labelTitle}</label
+		>
 	{/if}
 	<button
-		class="flex items-center justify-between rounded-md border border-gray-300 px-3 py-2 text-left focus:border-sky-500 focus:ring-3 focus:ring-sky-500/20 focus:outline-hidden {$selectedLabel
-			? 'text-black'
-			: 'text-slate-500'}"
+		class="flex min-h-11 items-center justify-between rounded-xl border border-[var(--cloud)] px-3 py-2 text-left font-bold focus:border-[var(--edukits-blue-bright)] focus:ring-3 focus:ring-[var(--edukits-blue-bright)]/20 focus:outline-hidden {$selectedLabel
+			? 'text-[var(--ink)]'
+			: 'text-[var(--silver)]'}"
 		use:melt={$trigger}
 		aria-label="Food"
 	>
@@ -81,13 +83,13 @@
 	</button>
 	{#if $open}
 		<div
-			class="z-10 flex max-h-[300px] flex-col overflow-y-auto rounded-lg border border-slate-200 bg-white p-1 shadow-md shadow-slate-100"
+			class="z-10 flex max-h-[300px] flex-col overflow-y-auto rounded-xl border border-[var(--cloud)] bg-white p-1"
 			use:melt={$menu}
 			transition:fade={{ duration: 150 }}
 		>
 			{#each options as { label, value } (value)}
 				<div
-					class="relative cursor-pointer scroll-my-2 rounded-md px-4 py-2 pl-8 hover:bg-sky-100 data-[disabled]:opacity-50 data-[highlighted]:bg-sky-200 data-[highlighted]:text-sky-900"
+					class="relative cursor-pointer scroll-my-2 rounded-xl px-4 py-2 pl-8 font-bold hover:bg-[var(--edukits-blue-light)] data-[disabled]:opacity-50 data-[highlighted]:bg-[var(--edukits-blue-light)] data-[highlighted]:text-[var(--edukits-blue)]"
 					use:melt={$option({ value, label })}
 				>
 					<div class="check {$isSelected(value) ? 'block' : 'hidden'}">
@@ -108,6 +110,6 @@
 		top: 50%;
 		z-index: 20;
 		translate: 0 calc(-50% + 1px);
-		color: var(--color-sky-500);
+		color: var(--edukits-blue-bright);
 	}
 </style>

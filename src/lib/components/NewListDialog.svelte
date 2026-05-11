@@ -126,18 +126,20 @@
 		></div>
 		<div
 			class="fixed top-1/2 left-1/2 z-50 max-h-[85vh] w-[90vw]
-            max-w-[450px] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white
-            p-6 shadow-lg"
+            max-w-[450px] -translate-x-1/2 -translate-y-1/2 rounded-xl border
+            border-[var(--cloud)] bg-white p-6"
 			use:melt={$content}
 			transition:slidefade={{ duration: 150, initialScale: 0.75 }}
 		>
-			<h2 use:melt={$dialogTitle} class="m-0 text-2xl font-semibold">New List</h2>
-			<p use:melt={$dialogDescription} class="mt-2 mb-5 leading-normal text-slate-500">
+			<h2 use:melt={$dialogTitle} class="page-heading m-0 text-3xl">New List</h2>
+			<p use:melt={$dialogDescription} class="mt-2 mb-5 leading-normal text-[var(--graphite)]">
 				Create a new list to add vocabulary to.
 			</p>
 
 			<fieldset class="mb-4 flex items-center gap-5">
-				<label for="name" class="w-[90px] text-right">Name</label>
+				<label for="name" class="w-[90px] text-right text-sm font-extrabold text-[var(--silver)]"
+					>Name</label
+				>
 				<input
 					type="text"
 					id="name"
@@ -147,7 +149,10 @@
 			</fieldset>
 
 			<fieldset class="mb-4 flex items-center gap-5">
-				<label for="description" class="w-[90px] text-right">Description</label>
+				<label
+					for="description"
+					class="w-[90px] text-right text-sm font-extrabold text-[var(--silver)]">Description</label
+				>
 				<input
 					type="text"
 					id="description"

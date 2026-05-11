@@ -30,15 +30,17 @@
 	const isActive = (url) => page.url.pathname.endsWith(url);
 </script>
 
-<div class="grid grid-cols-[min-content_1fr] gap-10">
+<div class="grid gap-8 md:grid-cols-[min-content_1fr] md:gap-10">
 	<!-- Sidebar -->
 	<div class="sidebar">
 		<nav class="flex min-w-40 flex-col">
 			{#each navPages as navPage (navPage.url)}
 				<a
 					href={navPage.url}
-					class={'mb-1 rounded-md px-3 py-2 hover:bg-slate-100' +
-						(isActive(navPage.url) ? ' bg-slate-200' : '')}
+					class={'mb-1 rounded-xl px-3 py-2 font-extrabold hover:bg-[var(--edukits-blue-light)] hover:text-[var(--edukits-blue)]' +
+						(isActive(navPage.url)
+							? ' bg-[var(--edukits-blue-light)] text-[var(--edukits-blue)]'
+							: '')}
 				>
 					{navPage.name}
 				</a>
