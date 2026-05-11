@@ -9,12 +9,12 @@ export const articles = ['a', 'an', 'the'];
  * @returns {string}
  */
 export function removeArticleEn(str) {
-    const words = str.split(' ');
-    const firstWord = words[0].toLowerCase();
+	const words = str.split(' ');
+	const firstWord = words[0].toLowerCase();
 
-    if (articles.includes(firstWord)) {
-        words.shift();
-    }
+	if (articles.includes(firstWord)) {
+		words.shift();
+	}
 
-    return words.join(' ');
+	return words.join(' ');
 }

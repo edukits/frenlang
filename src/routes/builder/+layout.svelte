@@ -1,43 +1,53 @@
 <script>
-    import {page} from "$app/stores";
+	import { page } from '$app/state';
 
-    const navPages = [{
-        name: 'Dashboard',
-        url: '/builder',
-    }, {
-        name: 'Vocabulary',
-        url: '/builder/vocabulary',
-    }, {
-        name: 'Phrases',
-        url: '/builder/phrases',
-    }, {
-        name: 'Topics',
-        url: '/builder/topics',
-    }, {
-        name: 'Tools',
-        url: '/builder/tools',
-    }];
+	let { children } = $props();
 
-    console.log($page.url.pathname);
+	const navPages = [
+		{
+			name: 'Dashboard',
+			url: '/builder'
+		},
+		{
+			name: 'Vocabulary',
+			url: '/builder/vocabulary'
+		},
+		{
+			name: 'Phrases',
+			url: '/builder/phrases'
+		},
+		{
+			name: 'Topics',
+			url: '/builder/topics'
+		},
+		{
+			name: 'Tools',
+			url: '/builder/tools'
+		}
+	];
+
+	/** @param {string} url */
+	const isActive = (url) => page.url.pathname.endsWith(url);
 </script>
 
 <div class="grid grid-cols-[min-content_1fr] gap-10">
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <nav class="flex flex-col min-w-40">
-            {#each navPages as navPage}
-                <a href={navPage.url} class={
-                "py-2 px-3 mb-1 rounded-md hover:bg-slate-100"
-                + ($page.url.pathname.endsWith(navPage.url) ? ' bg-slate-200' : '')
-                }>
-                    {navPage.name}
-                </a>
-            {/each}
-        </nav>
-    </div>
+	<!-- Sidebar -->
+	<div class="sidebar">
+		<nav class="flex min-w-40 flex-col">
+			{#each navPages as navPage (navPage.url)}
+				<a
+					href={navPage.url}
+					class={'mb-1 rounded-md px-3 py-2 hover:bg-slate-100' +
+						(isActive(navPage.url) ? ' bg-slate-200' : '')}
+				>
+					{navPage.name}
+				</a>
+			{/each}
+		</nav>
+	</div>
 
-    <!-- Main -->
-    <div class="main">
-        <slot></slot>
-    </div>
+	<!-- Main -->
+	<div class="main">
+		{@render children()}
+	</div>
 </div>

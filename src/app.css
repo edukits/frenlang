@@ -1,0 +1,28 @@
+@import 'tailwindcss';
+
+@layer base {
+	html {
+		@apply h-full bg-white;
+	}
+
+	/* Buttons */
+	.btn {
+		@apply rounded-md border border-slate-300 px-3 py-2 font-semibold hover:bg-slate-100 focus:ring-3 focus:ring-slate-500/20 focus:outline-hidden active:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50;
+	}
+	.btn-primary {
+		@apply border-sky-600 bg-sky-500 text-white hover:bg-sky-600 focus:ring-sky-300 active:bg-sky-700;
+	}
+	.btn-danger {
+		@apply border-red-800 bg-red-600 text-white hover:bg-red-700 focus:ring-red-300 active:bg-red-700;
+	}
+	/* Text Inputs */
+	input[type='text'],
+	input[type='email'],
+	input[type='password'] {
+		@apply rounded-md border border-gray-300 px-3 py-2 focus:border-sky-500 focus:ring-3 focus:ring-sky-500/20 focus:outline-hidden;
+	}
+	/* Contenteditable */
+	[contenteditable] {
+		@apply relative -mx-3 -my-2 rounded-md border border-transparent px-3 py-2 hover:border-gray-300 focus:border-sky-500 focus:ring-3 focus:ring-sky-500/20 focus:outline-hidden;
+	}
+}

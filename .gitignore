@@ -2,6 +2,7 @@
 node_modules
 /build
 /.svelte-kit
+test-results
 /package
 .env.local
 .env.*
@@ -10,6 +11,7 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 *storybook.log
+storybook-static
 
 # JetBrains IDEs
 .idea

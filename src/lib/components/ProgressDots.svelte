@@ -1,16 +1,15 @@
 <script>
-    export let total = 0;
-    export let current = 0;
+	let { total = 0, current = 0 } = $props();
 </script>
 
-<div class="flex justify-between gap-2 w-min mx-auto">
-    {#each Array.from({ length: total }) as _, i}
-        {#if i + 1 === current}
-            <div class="w-3 h-3 border-2 border-sky-400 rounded-full"></div>
-        {:else if i < current}
-            <div class="w-3 h-3 bg-sky-400 rounded-full"></div>
-        {:else}
-            <div class="w-3 h-3 bg-slate-300 rounded-full"></div>
-        {/if}
-    {/each}
+<div class="mx-auto flex w-min justify-between gap-2">
+	{#each Array.from({ length: total }, (_, i) => i) as i (i)}
+		{#if i + 1 === current}
+			<div class="h-3 w-3 rounded-full border-2 border-sky-400"></div>
+		{:else if i < current}
+			<div class="h-3 w-3 rounded-full bg-sky-400"></div>
+		{:else}
+			<div class="h-3 w-3 rounded-full bg-slate-300"></div>
+		{/if}
+	{/each}
 </div>

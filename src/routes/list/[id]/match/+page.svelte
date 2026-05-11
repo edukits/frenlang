@@ -1,19 +1,19 @@
 <script>
-    import Matching from "$lib/components/Matching.svelte";
-    export let data;
-    $: ({ list: { vocabulary } } = data);
+	import Matching from '$lib/components/Matching.svelte';
+	let { data } = $props();
+	let {
+		list: { vocabulary }
+	} = $derived(data);
 
-    /** @type {{ en: string, fr: string }[]} */
-    let words = [];
-
-    $: (words = vocabulary.map(({ word, translation }) => ({
-        en: word,
-        fr: translation
-    })));
+	/** @type {{ en: string, fr: string }[]} */
+	let words = $derived(
+		vocabulary.map(({ word, translation }) => ({
+			en: word,
+			fr: translation
+		}))
+	);
 </script>
 
-<div class="max-w-[600px] mx-auto">
-    <Matching
-        sourceWords={words}
-    />
+<div class="mx-auto max-w-[600px]">
+	<Matching sourceWords={words} />
 </div>

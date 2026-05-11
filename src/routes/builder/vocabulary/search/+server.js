@@ -1,25 +1,25 @@
 export async function GET({ locals: { supabase }, url }) {
-    // Get query parameters
-    const search = url.searchParams.get('search') || '';
-    const limit = Number(url.searchParams.get('limit')) || 10;
-    const excludeIdsParam = url.searchParams.get('exclude') || '[]';
-    const excludeIds = JSON.parse(excludeIdsParam);
+	// Get query parameters
+	const search = url.searchParams.get('search') || '';
+	const limit = Number(url.searchParams.get('limit')) || 10;
+	const excludeIdsParam = url.searchParams.get('exclude') || '[]';
+	const excludeIds = JSON.parse(excludeIdsParam);
 
-    let query = supabase.from('vocabulary').select();
+	let query = supabase.from('vocabulary').select();
 
-    if (search) {
-        query = query.textSearch('word', `'${search}'`);
-    }
+	if (search) {
+		query = query.textSearch('word', `'${search}'`);
+	}
 
-    if (excludeIds.length > 0) {
-        query = query.not('id', 'in', `(${excludeIds.join(',')})`);
-    }
+	if (excludeIds.length > 0) {
+		query = query.not('id', 'in', `(${excludeIds.join(',')})`);
+	}
 
-    const { error, data } = await query.limit(limit);
+	const { error, data } = await query.limit(limit);
 
-    if (error) {
-        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
-    }
+	if (error) {
+		return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+	}
 
-    return new Response(JSON.stringify(data), { status: 200 });
+	return new Response(JSON.stringify(data), { status: 200 });
 }

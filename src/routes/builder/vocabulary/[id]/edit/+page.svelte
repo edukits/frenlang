@@ -1,104 +1,81 @@
 <script>
-    import EditVocab from '$lib/components/EditVocab.svelte';
-    import {goto} from '$app/navigation';
-    import {onMount} from 'svelte';
+	import EditVocab from '$lib/components/EditVocab.svelte';
+	import { goto } from '$app/navigation';
 
-    export let data;
-    const {item} = data;
+	let { data } = $props();
+	const item = (() => data.item)();
 
-    console.log(item);
+	let wordType = $state(item.word_type);
+	let word = $state(item.word);
+	let translation = $state(item.translation);
+	let gender = $state(item.gender);
+	let pluralForm = $state(item.plural_form);
+	let topics = $state(item.topics);
 
-    let {
-        word_type: wordType,
-        word,
-        translation,
-        gender,
-        plural_form: pluralForm,
-        topics
-    } = item;
+	/** @type boolean */
+	let loading = $state(false);
 
-    /** @type boolean */
-    let loading = false;
-
-    /** @type {() => void} */
-    let reset;
-
-    /**
-     * Update the vocabulary item.
-     */
-    async function update() {
-        loading = true;
-        try {
-            console.log(JSON.stringify({
-                word,
-                translation,
-                topic_ids: topics.map(t => t.id),
-            }));
-            const res = await fetch(`/builder/vocabulary/${data.item.id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    word_type: wordType,
-                    word,
-                    translation,
-                    gender,
-                    plural_form: wordType === 'noun' ? pluralForm : undefined,
-                    topic_ids: topics.map(t => t.id),
-                }),
-            });
-            if (res.ok) {
-                goto('/builder/vocabulary');
-            } else {
-                const json = await res.json();
-                console.error(json);
-            }
-        } catch (e) {
-            console.error(e);
-        } finally {
-            loading = false;
-        }
-    }
+	/**
+	 * Update the vocabulary item.
+	 */
+	async function update() {
+		loading = true;
+		try {
+			const res = await fetch(`/builder/vocabulary/${item.id}`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					word_type: wordType,
+					word,
+					translation,
+					gender,
+					plural_form: wordType === 'noun' ? pluralForm : undefined,
+					topic_ids: topics.map((t) => t.id)
+				})
+			});
+			if (res.ok) {
+				goto('/builder/vocabulary');
+			} else {
+				const json = await res.json();
+				console.error(json);
+			}
+		} catch (e) {
+			console.error(e);
+		} finally {
+			loading = false;
+		}
+	}
 </script>
 
-<svelte:window on:keydown={e => {
-    if (e.ctrlKey && e.key === 'Enter') {
-        update();
-    }
-    if (e.key === 'Escape') {
-        goto('/builder/vocabulary');
-    }
-}} />
+<svelte:window
+	onkeydown={(e) => {
+		if (e.ctrlKey && e.key === 'Enter') {
+			update();
+		}
+		if (e.key === 'Escape') {
+			goto('/builder/vocabulary');
+		}
+	}}
+/>
 
-<div class="flex justify-between items-center">
-    <h1 class="font-semibold text-3xl">Edit Vocabulary</h1>
-    <div class="flex gap-2">
-        <a class="btn btn-secondary flex items-center gap-2" href="/builder/vocabulary">
-            Cancel
-            <span class="text-xs text-slate-500 font-mono border border-slate-300 rounded p-1">
-                Esc
-            </span>
-        </a>
-        <button
-                class="btn btn-primary flex items-center gap-2"
-                disabled={loading}
-                on:click={update}
-        >
-            Update
-            <span class="text-xs text-sky-100 font-mono border border-sky-400 rounded p-1">
-                Ctrl + Enter
-            </span>
-        </button>
-    </div>
+<div class="flex items-center justify-between">
+	<h1 class="text-3xl font-semibold">Edit Vocabulary</h1>
+	<div class="flex gap-2">
+		<a class="btn btn-secondary flex items-center gap-2" href="/builder/vocabulary">
+			Cancel
+			<span class="rounded border border-slate-300 p-1 font-mono text-xs text-slate-500">
+				Esc
+			</span>
+		</a>
+		<button class="btn btn-primary flex items-center gap-2" disabled={loading} onclick={update}>
+			Update
+			<span class="rounded border border-sky-400 p-1 font-mono text-xs text-sky-100">
+				Ctrl + Enter
+			</span>
+		</button>
+	</div>
 </div>
 
-<EditVocab
-    bind:word
-    bind:translation
-    bind:wordType
-    bind:gender
-    bind:pluralForm
-    bind:topics
-    bind:reset
-/>
+<EditVocab bind:word bind:translation bind:wordType bind:gender bind:pluralForm bind:topics />

@@ -1,16 +1,12 @@
 <script>
-    export let type;
-    export let name;
-    export let value = null;
-    export let placeholder = null;
-    export let required = false;
+	let { type, name, value = $bindable(null), placeholder = null, required = false } = $props();
 </script>
 
 <input
-    type={type}
-    name={name}
-    required={required}
-    value={value}
-    placeholder={placeholder}
-    class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-sky-500 focus:ring focus:ring-sky-500 focus:ring-opacity-20"
->
+	{type}
+	{name}
+	{required}
+	bind:value
+	{placeholder}
+	class="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-sky-500 focus:ring-3 focus:ring-sky-500/20 focus:outline-hidden"
+/>

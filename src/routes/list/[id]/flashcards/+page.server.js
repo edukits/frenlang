@@ -1,3 +1,3 @@
-import {load} from '../+page.server.js';
+import { load } from '../+page.server.js';
 
-export {load};
+export { load };

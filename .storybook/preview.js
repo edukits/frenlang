@@ -1,4 +1,4 @@
-import '../src/app.pcss';
+import '../src/app.css';
 
 /** @type { import('@storybook/svelte').Preview } */
 const preview = {

@@ -1,4 +1,4 @@
-import {mergeConfig} from 'vite';
+import { mergeConfig } from 'vite';
 import Icons from 'unplugin-icons/vite';
 
 // https://github.com/storybookjs/storybook/issues/20562
@@ -6,35 +6,30 @@ import Icons from 'unplugin-icons/vite';
  * @param {import('vite').InlineConfig} config
  */
 const workaroundSvelteDocgenPluginConflictWithUnpluginIcons = (config) => {
-	if (!config.plugins) return config
+	if (!config.plugins) return config;
 
-	const [_internalPlugins, ...userPlugins] = config.plugins
-	const docgenPlugin = userPlugins.find(plugin => plugin.name === 'storybook:svelte-docgen-plugin')
+	const [_internalPlugins, ...userPlugins] = config.plugins;
+	const docgenPlugin = userPlugins.find(
+		(plugin) => plugin.name === 'storybook:svelte-docgen-plugin'
+	);
 	if (docgenPlugin) {
-		const origTransform = docgenPlugin.transform
-		const newTransform = (code, id, options) => {
+		const origTransform = docgenPlugin.transform;
+		const newTransform = function (code, id, options) {
 			if (id.startsWith('~icons/')) {
-				return
+				return;
 			}
-			return origTransform?.call(docgenPlugin, code, id, options)
-		}
-		docgenPlugin.transform = newTransform
-		docgenPlugin.enforce = 'post'
+			return origTransform?.call(this, code, id, options);
+		};
+		docgenPlugin.transform = newTransform;
+		docgenPlugin.enforce = 'post';
 	}
-	return config
-}
+	return config;
+};
 
 /** @type { import('@storybook/sveltekit').StorybookConfig } */
 const config = {
-	stories: [
-		'../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx|svelte)'],
-	addons: [
-        '@storybook/addon-links',
-        '@storybook/addon-essentials',
-        '@chromatic-com/storybook',
-        '@storybook/addon-interactions',
-        '@storybook/addon-svelte-csf'
-    ],
+	stories: ['../src/**/*.stories.@(js|jsx|mjs|ts|tsx|svelte)'],
+	addons: ['@chromatic-com/storybook', '@storybook/addon-svelte-csf'],
 	framework: {
 		name: '@storybook/sveltekit',
 		options: {}
@@ -43,20 +38,16 @@ const config = {
 		autodocs: 'tag'
 	},
 	async viteFinal(config) {
-		config = workaroundSvelteDocgenPluginConflictWithUnpluginIcons(config)
+		config = workaroundSvelteDocgenPluginConflictWithUnpluginIcons(config);
 
 		// Merge custom configuration into the default config
 		return mergeConfig(config, {
 			plugins: [
 				Icons({
-					compiler: "svelte",
-				}),
-			],
-			// Add dependencies to pre-optimization
-			optimizeDeps: {
-				include: ["storybook-dark-mode"],
-			},
+					compiler: 'svelte'
+				})
+			]
 		});
-	},
+	}
 };
 export default config;

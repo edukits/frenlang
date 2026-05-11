@@ -1,19 +1,19 @@
 <script>
-    export let data;
+	let { data } = $props();
 </script>
 
-<h1 class="font-semibold text-3xl">Dashboard</h1>
+<h1 class="text-3xl font-semibold">Dashboard</h1>
 
-<div class="grid grid-cols-3 gap-3 mt-4">
-    <!-- Topics -->
-    <a class="btn block p-5" href="/builder/topics">
-        <h2 class="font-semibold text-xl">Topics</h2>
-        <span class="text-gray-500 text-2xl">{data.topicSize}</span>
-    </a>
+<div class="mt-4 grid grid-cols-3 gap-3">
+	<!-- Topics -->
+	<a class="btn block p-5" href="/builder/topics">
+		<h2 class="text-xl font-semibold">Topics</h2>
+		<span class="text-2xl text-gray-500">{data.topicSize}</span>
+	</a>
 
-    <!-- Vocabulary -->
-    <a class="btn block p-5" href="/builder/vocabulary">
-        <h2 class="font-semibold text-xl">Vocabulary</h2>
-        <span class="text-gray-500 text-2xl">{data.vocabSize}</span>
-    </a>
+	<!-- Vocabulary -->
+	<a class="btn block p-5" href="/builder/vocabulary">
+		<h2 class="text-xl font-semibold">Vocabulary</h2>
+		<span class="text-2xl text-gray-500">{data.vocabSize}</span>
+	</a>
 </div>
