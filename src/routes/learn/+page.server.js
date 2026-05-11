@@ -1,6 +1,8 @@
-export async function load({ locals: { supabase } }) {
-	const { data } = await supabase.from('vocabulary').select('*', { count: 'exact' });
+import { api } from '$lib/server/convex.js';
+
+export async function load({ locals: { convex } }) {
+	const vocabulary = await convex.query(api.vocabulary.all);
 	return {
-		vocabulary: data ?? []
+		vocabulary
 	};
 }

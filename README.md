@@ -2,7 +2,7 @@
 
 Frenlang is a language learning platform that uses spaced repetition to help you learn a new language.
 
-Built with SvelteKit and Supabase. Currently in development.
+Built with SvelteKit and Convex. Currently in development.
 
 ## Developing
 
@@ -27,6 +27,6 @@ You can preview the production build with `npm run preview`.
 
 Automatically deployed to Vercel.
 
-## User Roles
+## Authentication
 
-Using [Supabase Custom Claims](https://github.com/supabase-community/supabase-custom-claims/tree/main) to manage user roles.
+Authentication is handled with Convex Auth using email/password accounts.

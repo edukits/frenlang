@@ -1,17 +1,16 @@
 import { redirect } from '@sveltejs/kit';
 
-export const GET = async (event) => {
-	const {
-		url,
-		locals: { supabase }
-	} = event;
+import { api, clearAuthCookies } from '$lib/server/convex.js';
 
+export const GET = async ({ url, locals: { convex }, cookies }) => {
 	const redirectTo = url.searchParams.get('next') ?? '/';
-	const { error } = await supabase.auth.signOut();
 
-	if (error) {
-		// @todo: handle
+	try {
+		await convex.action(api.auth.signOut);
+	} catch (_error) {
+		// The local cookies still need to be cleared if the remote session is already gone.
 	}
 
+	clearAuthCookies(cookies);
 	throw redirect(303, redirectTo);
 };

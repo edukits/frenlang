@@ -1,27 +1,13 @@
 import { error } from '@sveltejs/kit';
 
-export const load = async ({ locals: { supabase }, params: { id } }) => {
-	// Retrieve the entry with the given ID
-	const { data: item } = await supabase.from('vocabulary').select('*').eq('id', id).single();
+import { api } from '$lib/server/convex.js';
 
-	// If the entry does not exist, return a 404 response
+export const load = async ({ locals: { convex }, params: { id } }) => {
+	const item = await convex.query(api.vocabulary.get, { id });
+
 	if (!item) {
 		error(404, 'Vocabulary entry not found');
 	}
-
-	// The vocabulary_topics table links vocabulary entries to topics
-	// Retrieve the topics that are linked to this vocabulary entry
-	const { data: topics } = await supabase
-		.from('vocabulary_topics')
-		.select(
-			`
-            topic_id,
-            topics (id, name, description)
-        `
-		)
-		.eq('vocabulary_id', id);
-
-	item.topics = (topics ?? []).map(({ topics }) => topics);
 
 	return { item };
 };

@@ -1,7 +1,5 @@
 <script>
 	import '../app.css';
-	import { goto, invalidate } from '$app/navigation';
-	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { createAvatar } from '@dicebear/core';
 	import { shapes } from '@dicebear/collection';
@@ -13,26 +11,7 @@
 	import { fly } from 'svelte/transition';
 
 	let { data, children } = $props();
-	let { session, supabase, user } = $derived(data);
-
-	onMount(() => {
-		const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
-			if (!newSession) {
-				/**
-				 * Queue this as a task so the navigation won't prevent the
-				 * triggering function from completing
-				 */
-				setTimeout(() => {
-					goto('/', { invalidateAll: true });
-				});
-			}
-			if (newSession?.expires_at !== session?.expires_at) {
-				invalidate('supabase:auth');
-			}
-		});
-
-		return () => data.subscription.unsubscribe();
-	});
+	let { user } = $derived(data);
 
 	let svg = $derived(
 		createAvatar(shapes, {

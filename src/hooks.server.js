@@ -1,89 +1,89 @@
-import { createServerClient } from '@supabase/ssr';
 import { redirect } from '@sveltejs/kit';
-import { sequence } from '@sveltejs/kit/hooks';
 
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
+import {
+	api,
+	clearAuthCookies,
+	createConvexClient,
+	createMissingConvexClient,
+	getAuthTokens,
+	setAuthCookies
+} from '$lib/server/convex.js';
 
-const supabase = async ({ event, resolve }) => {
-	/**
-	 * Creates a Supabase client specific to this server request.
-	 *
-	 * The Supabase client gets the Auth token from the request cookies.
-	 */
-	event.locals.supabase = createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
-		cookies: {
-			getAll() {
-				return event.cookies.getAll();
-			},
-			/**
-			 * Note: You have to add the `path` variable to the
-			 * set and remove method due to sveltekit's cookie API
-			 * requiring this to be set, setting the path to an empty string
-			 * will replicate previous/standard behavior (https://kit.svelte.dev/docs/types#public-types-cookies)
-			 */
-			setAll(cookiesToSet) {
-				cookiesToSet.forEach(({ name, value, options }) =>
-					event.cookies.set(name, value, { ...options, path: '/' })
-				);
+async function loadSession(event) {
+	const { token, refreshToken } = getAuthTokens(event.cookies);
+
+	if (token) {
+		const client = createConvexClient(token);
+		event.locals.convex = client;
+
+		try {
+			const user = await client.query(api.users.current);
+			if (user) {
+				return {
+					session: { userId: user.id },
+					user
+				};
 			}
+		} catch (_error) {
+			// The access token may have expired. Try the refresh token below.
 		}
-	});
+	}
 
-	/**
-	 * Unlike `supabase.auth.getSession()`, which returns the session _without_
-	 * validating the JWT, this function also calls `getUser()` to validate the
-	 * JWT before returning the session.
-	 */
-	event.locals.safeGetSession = async () => {
-		const {
-			data: { session }
-		} = await event.locals.supabase.auth.getSession();
-		if (!session) {
-			return { session: null, user: null };
+	if (refreshToken) {
+		try {
+			const client = createConvexClient();
+			const result = await client.action(api.auth.signIn, { refreshToken });
+
+			if (result.tokens) {
+				setAuthCookies(event.cookies, result.tokens);
+				const authedClient = createConvexClient(result.tokens.token);
+				event.locals.convex = authedClient;
+				const user = await authedClient.query(api.users.current);
+
+				if (user) {
+					return {
+						session: { userId: user.id },
+						user
+					};
+				}
+			}
+		} catch (_error) {
+			clearAuthCookies(event.cookies);
 		}
+	}
 
-		const {
-			data: { user },
-			error
-		} = await event.locals.supabase.auth.getUser();
-		if (error) {
-			// JWT validation has failed
-			return { session: null, user: null };
+	event.locals.convex =
+		event.url.pathname.startsWith('/learn') || event.url.pathname === '/auth/password'
+			? createConvexClient()
+			: createMissingConvexClient();
+	return { session: null, user: null };
+}
+
+export const handle = async ({ event, resolve }) => {
+	let cachedSession;
+
+	event.locals.safeGetSession = event.locals.getSession = async () => {
+		if (!cachedSession) {
+			cachedSession = await loadSession(event);
 		}
-
-		return { session, user };
+		return cachedSession;
 	};
 
-	return resolve(event, {
-		filterSerializedResponseHeaders(name) {
-			/**
-			 * Supabase libraries use the `content-range` header, so we need to
-			 * tell SvelteKit to pass it through.
-			 */
-			return name === 'content-range';
-		}
-	});
-};
-
-// Guards protected pages, I think
-const authGuard = async ({ event, resolve }) => {
-	const { session, user } = await event.locals.safeGetSession();
+	const { session, user } = await event.locals.getSession();
 	event.locals.session = session;
 	event.locals.user = user;
 
-	if (!event.locals.session && event.url.pathname.startsWith('/private')) {
-		return redirect(303, '/auth');
+	if (!session && event.url.pathname.startsWith('/builder')) {
+		throw redirect(303, '/sign-in');
 	}
 
-	if (!event.locals.session && event.url.pathname.startsWith('/builder')) {
-		return redirect(303, '/sign-in');
+	if (!session && event.url.pathname.startsWith('/list')) {
+		throw redirect(303, '/sign-in');
 	}
 
-	if (event.locals.session && event.url.pathname === '/auth') {
-		return redirect(303, '/private');
+	if (session && event.url.pathname === '/sign-in') {
+		throw redirect(303, '/');
 	}
 
 	return resolve(event);
 };
-
-export const handle = sequence(supabase, authGuard);

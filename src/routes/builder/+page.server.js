@@ -1,11 +1,10 @@
-export const load = async ({ locals: { supabase } }) => {
-	const { count: vocabSize } = await supabase
-		.from('vocabulary')
-		.select('*', { count: 'exact', head: true });
+import { api } from '$lib/server/convex.js';
 
-	const { count: topicSize } = await supabase
-		.from('topics')
-		.select('*', { count: 'exact', head: true });
+export const load = async ({ locals: { convex } }) => {
+	const [vocabSize, topicSize] = await Promise.all([
+		convex.query(api.vocabulary.count),
+		convex.query(api.topics.count)
+	]);
 
 	return { vocabSize, topicSize };
 };
