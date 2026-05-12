@@ -12,12 +12,18 @@
 	 * @param {KeyboardEvent} event
 	 */
 	function handleKeydown(event) {
+		if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+			return;
+		}
 		if (event.key === ' ') {
+			event.preventDefault();
 			flipped = !flipped;
 		} else if (event.key >= '1' && event.key <= '5') {
-			confidenceButtons[+event.key - 1].focus();
+			const button = confidenceButtons[+event.key - 1];
+			if (!button) return;
+			button.focus();
 			// Wait a moment to show the focus outline before clicking the button
-			setTimeout(() => confidenceButtons[+event.key - 1].click(), 100);
+			setTimeout(() => button.click(), 100);
 		}
 	}
 </script>

@@ -5,8 +5,6 @@
 	import { shapes } from '@dicebear/collection';
 	import Logo from '../img/Logomark.png';
 	import Toaster from '$lib/components/Toaster.svelte';
-	import Handyman from '~icons/material-symbols/handyman-outline';
-	import Library from '~icons/material-symbols/local-library-outline';
 	import { createDropdownMenu, melt } from '@melt-ui/svelte';
 	import { fly } from 'svelte/transition';
 
@@ -25,8 +23,9 @@
 	} = createDropdownMenu();
 
 	const menuItems = [
-		{ href: '/builder', icon: Handyman, text: 'Builder' },
-		{ href: '/learn', icon: Library, text: 'Learn' }
+		{ href: '/learn', text: 'Learn' },
+		{ href: '/review', text: 'Review' },
+		{ href: '/shop', text: 'Shop' }
 	];
 
 	/** @param {string} href */
@@ -44,7 +43,7 @@
 			</a>
 			<nav class="flex items-center gap-3">
 				{#if user}
-					{#each menuItems as { href, icon: Icon, text } (href)}
+					{#each menuItems as { href, text } (href)}
 						<a
 							{href}
 							class="top-nav-link mr-4 flex items-center gap-2 py-4 {isCurrentPage(href)
@@ -53,8 +52,7 @@
 									: 'top-nav-link--active'
 								: ''}"
 						>
-							<Icon />
-							<span class="hidden md:inline">{text}</span>
+							<span>{text}</span>
 						</a>
 					{/each}
 					<button
@@ -72,6 +70,9 @@
 						>
 							<div use:melt={$item}>
 								<a href="/profile" class="block px-3 py-2">Profile</a>
+							</div>
+							<div use:melt={$item}>
+								<a href="/admin" class="block px-3 py-2">Admin</a>
 							</div>
 							<div use:melt={$item}>
 								<a href="/sign-out" class="block px-3 py-2">Sign Out</a>

@@ -73,11 +73,8 @@ export const handle = async ({ event, resolve }) => {
 	event.locals.session = session;
 	event.locals.user = user;
 
-	if (!session && event.url.pathname.startsWith('/builder')) {
-		throw redirect(303, '/sign-in');
-	}
-
-	if (!session && event.url.pathname.startsWith('/list')) {
+	const protectedPrefixes = ['/admin', '/learn', '/review', '/profile', '/shop'];
+	if (!session && protectedPrefixes.some((prefix) => event.url.pathname.startsWith(prefix))) {
 		throw redirect(303, '/sign-in');
 	}
 

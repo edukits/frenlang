@@ -1,99 +1,125 @@
 <script>
-	import NewListDialog from '$lib/components/NewListDialog.svelte';
-	import TimeAgo from 'javascript-time-ago';
-	import en from 'javascript-time-ago/locale/en';
-	import { onMount } from 'svelte';
-	import ListAlt from '~icons/material-symbols/list-alt-sharp';
-	import Square from '~icons/material-symbols/square-outline';
-
 	let { data } = $props();
-	let { session, lists } = $derived(data);
 
-	TimeAgo.addDefaultLocale(en);
-	const timeAgo = new TimeAgo('en-US');
-
-	let currentTime = $state(Date.now());
-	let formattedTimes = $derived.by(() => {
-		currentTime;
-		return lists.map((list) => ({
-			...list,
-			formattedTime: timeAgo.format(new Date(list.created_at))
-		}));
-	});
-
-	onMount(() => {
-		const interval = setInterval(() => {
-			currentTime = Date.now();
-		}, 30000);
-
-		return () => clearInterval(interval);
-	});
+	let { session, dashboard, skillTree, nextLesson } = $derived(data);
+	let profile = $derived(dashboard?.profile);
+	let today = $derived(dashboard?.today ?? { xpEarned: 0, lessonsCompleted: 0, minutes: 0 });
+	let goalMinutes = $derived(profile?.dailyGoalMinutes ?? 10);
+	let goalProgress = $derived(
+		Math.min(100, Math.round((today.minutes / Math.max(goalMinutes, 1)) * 100))
+	);
+	let hasCourseContent = $derived((skillTree?.units ?? []).some((unit) => unit.lessons?.length));
 </script>
 
 <svelte:head>
 	<title>Frenlang by EduKits</title>
 </svelte:head>
 
-<div class={session ? '' : 'flex min-h-0 flex-1 flex-col justify-center'}>
-	<div
-		class="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-[0.95fr_1.05fr]"
-		class:my-16={session}
-		class:md:my-20={session}
-	>
-	<div class="hero-visual">
-		<img
-			src="/images/abstract-flashcards-hero.png"
-			alt=""
-			width="1448"
-			height="1086"
-			class="hero-image"
-			decoding="async"
-			fetchpriority="high"
-		/>
-	</div>
-	<div class="flex flex-col items-center gap-5 text-center md:items-start md:text-left">
-		<p class="eyebrow">French, made to stick</p>
-		<h1 class="brand-heading text-5xl md:text-6xl">Frenlang</h1>
-		<p class="max-w-xl text-lg leading-7 text-[var(--graphite)]">
-			Make your own French vocabulary lists and review them with flashcards that remember what
-			you keep forgetting. Ten quiet minutes a day is enough.
-		</p>
-		{#if !session}
-			<a href="/sign-in" class="btn btn-primary w-full max-w-xs">Start learning</a>
-		{/if}
-	</div>
-	</div>
-
-	{#if session}
-	<div class="container mx-auto">
-		<div class="flex flex-col gap-5">
-			<div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-				<div>
-					<p class="eyebrow">Study workspace</p>
-					<h2 class="page-heading text-4xl">Your lists</h2>
-				</div>
-				<NewListDialog invalidateAllOnCreation={true} />
+{#if !session}
+	<div class="flex min-h-0 flex-1 flex-col justify-center">
+		<div class="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-[0.95fr_1.05fr]">
+			<div class="hero-visual">
+				<img
+					src="/images/abstract-flashcards-hero.png"
+					alt=""
+					width="1448"
+					height="1086"
+					class="hero-image"
+					decoding="async"
+					fetchpriority="high"
+				/>
 			</div>
-			<div class="grid gap-5 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-				{#each formattedTimes as list (list.id)}
-					<a class="interactive-card block p-5 font-normal" href="/list/{list.id}">
-						<p class="mb-3 flex items-center gap-1 font-extrabold text-[var(--silver)]">
-							{#if list.vocabulary_count > 0}
-								<ListAlt class="h-6 w-auto p-0" /> {list.vocabulary_count}
-							{:else}
-								<Square class="h-6 w-auto p-0" /> Empty List
-							{/if}
-						</p>
-						<h3 class="text-xl font-extrabold">{list.name}</h3>
-						<p class="mt-1 text-[var(--graphite)]">{list.description}</p>
-						<p class="mt-4 text-sm font-bold text-[var(--silver)]">Created {list.formattedTime}</p>
-					</a>
-				{/each}
+			<div class="flex flex-col items-center gap-5 text-center md:items-start md:text-left">
+				<p class="eyebrow">French, made to stick</p>
+				<h1 class="brand-heading text-5xl md:text-6xl">Frenlang</h1>
+				<p class="max-w-xl text-lg leading-7 text-[var(--graphite)]">
+					Practice curated French drills with pre-made lessons, quick games, streaks, XP, and
+					rewards that make daily review feel light.
+				</p>
+				<a href="/sign-in" class="btn btn-primary w-full max-w-xs">Start learning</a>
 			</div>
 		</div>
 	</div>
-	{/if}
-</div>
+{:else}
+	<div class="mx-auto flex w-full max-w-6xl flex-col gap-6">
+		<div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+			<div>
+				<p class="eyebrow">Learner dashboard</p>
+				<h1 class="page-heading text-4xl">
+					Welcome back{profile?.displayName ? `, ${profile.displayName}` : ''}
+				</h1>
+				<p class="mt-2 text-[var(--graphite)]">
+					Keep your French streak moving with one focused lesson.
+				</p>
+			</div>
+			<a href="/learn" class="btn btn-primary">Open skill tree</a>
+		</div>
+
+		<div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+			<div class="surface-card p-5">
+				<p class="eyebrow">Streak</p>
+				<p class="mt-2 text-3xl font-extrabold">{profile?.currentStreak ?? 0} days</p>
+			</div>
+			<div class="surface-card p-5">
+				<p class="eyebrow">Daily goal</p>
+				<p class="mt-2 text-3xl font-extrabold">{today.minutes}/{goalMinutes} min</p>
+				<div class="mt-3 h-3 overflow-hidden rounded-full bg-[var(--cloud-soft)]">
+					<div
+						class="h-full rounded-full bg-[var(--edukits-blue)]"
+						style:width={`${goalProgress}%`}
+					></div>
+				</div>
+			</div>
+			<div class="surface-card p-5">
+				<p class="eyebrow">Today XP</p>
+				<p class="mt-2 text-3xl font-extrabold">{today.xpEarned}</p>
+			</div>
+			<div class="surface-card p-5">
+				<p class="eyebrow">Tier</p>
+				<p class="mt-2 text-3xl font-extrabold">{profile?.tier ?? 'Bronze'}</p>
+			</div>
+			<div class="surface-card p-5">
+				<p class="eyebrow">Coins</p>
+				<p class="mt-2 text-3xl font-extrabold text-[var(--sunshine)]">{profile?.coins ?? 0}</p>
+			</div>
+		</div>
+
+		{#if nextLesson}
+			<a
+				href="/learn/lesson/{nextLesson.id}"
+				class="interactive-card grid gap-4 p-6 md:grid-cols-[1fr_auto] md:items-center"
+			>
+				<div>
+					<p class="eyebrow">Continue learning</p>
+					<h2 class="mt-2 text-2xl font-extrabold">{nextLesson.name}</h2>
+					<p class="mt-1 text-[var(--graphite)]">
+						{nextLesson.unitName} · {nextLesson.xpReward} XP
+					</p>
+				</div>
+				<span class="btn btn-primary pointer-events-none">Start lesson</span>
+			</a>
+		{:else if hasCourseContent}
+			<div class="surface-card p-6">
+				<p class="eyebrow">All caught up</p>
+				<h2 class="mt-2 text-2xl font-extrabold">You have completed the available path.</h2>
+				<p class="mt-1 text-[var(--graphite)]">
+					Review due cards or add new content from the admin area.
+				</p>
+			</div>
+		{:else}
+			<div class="surface-card grid gap-4 p-6 md:grid-cols-[1fr_auto] md:items-center">
+				<div>
+					<p class="eyebrow">No course content yet</p>
+					<h2 class="mt-2 text-2xl font-extrabold">Create the first French course path.</h2>
+					<p class="mt-1 text-[var(--graphite)]">
+						Add courses, units, lessons, and drill items from the admin tools.
+					</p>
+				</div>
+				<a href="/admin" class="btn btn-primary">Add content</a>
+			</div>
+		{/if}
+	</div>
+{/if}
 
 <style>
 	.hero-visual {

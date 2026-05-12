@@ -308,14 +308,6 @@ export const remove = mutation({
 			await ctx.db.delete(relationship._id);
 		}
 
-		const listRelationships = await ctx.db
-			.query('vocabularyLists')
-			.withIndex('by_vocabulary', (q) => q.eq('vocabularyId', args.id))
-			.collect();
-		for (const relationship of listRelationships) {
-			await ctx.db.delete(relationship._id);
-		}
-
 		await ctx.db.delete(args.id);
 		return null;
 	}

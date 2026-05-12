@@ -1,8 +1,8 @@
 import { api } from '$lib/server/convex.js';
 
 export async function load({ locals: { convex } }) {
-	const vocabulary = await convex.query(api.vocabulary.all);
+	const skillTree = await convex.query(api.learn.getSkillTree, { courseSlug: 'french' });
 	return {
-		vocabulary
+		skillTree
 	};
 }
