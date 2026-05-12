@@ -7,5 +7,6 @@ export async function load({ locals: { convex } }) {
 	if (!profile.isAdmin) {
 		kitError(403, 'Admin access required');
 	}
-	return { profile };
+	const courses = await convex.query(api.content.courses.list);
+	return { profile, courses };
 }
